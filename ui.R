@@ -4,7 +4,7 @@
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
 # rm(list=ls())
-# setwd("/Users/crpe/Documents/Shiny Demo") # MAC
+# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 
 library(shiny) # Need to Run Shiny App
 library(shinyWidgets) # Library of More Widgets like the Dropdown Button (see more at: https://github.com/dreamRs/shinyWidgets)
@@ -46,9 +46,9 @@ fieldsMandatory <- c("dataset", "state")
 ## Frontend of the Shiny App-----------------------------------------------
 shinyUI(fluidPage(
   # CRPE Logo
-  img(src='img/crpe.png'),
+  img(src='img/crpe.svg'),
   # Application title
-  titlePanel("CRPE Database Demo"),
+  titlePanel("CRPE Database Demo"), 
   
   # SidePanel -------------------------------------------
   # -The Input/Dropdown Menu that Control the Output

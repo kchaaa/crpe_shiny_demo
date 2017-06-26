@@ -4,7 +4,7 @@
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
 # rm(list=ls())
-# setwd("/Users/crpe/Documents/Shiny Demo") # MAC
+# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 
 library(shiny) # Need to Run Shiny App
 library(shinyjs) # Need to Make Fields Mandatory/Optional and Do Other Cool Stuff
