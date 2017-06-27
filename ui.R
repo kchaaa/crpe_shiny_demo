@@ -9,6 +9,7 @@ setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 # Libraries Needed ----------------------------------------------------------
 library(shiny) # Need to Run Shiny App
 library(shinyWidgets) # Library of More Widgets like the Dropdown Button (see more at: https://github.com/dreamRs/shinyWidgets)
+library(shinyjs) # Need for shinyjs
 
 # Scripts Needed ----------------------------------------------------------
 source('scripts/list.r') # For Manual Side
@@ -23,7 +24,7 @@ shinyUI(fluidPage(
   img(src = "crpe.png", 
       height = '100px', width = '250px', style = "margin-top: 10px"),
   # Application title
-  titlePanel("Elastic Beanstalk"), 
+  titlePanel("and the Beanstalk"), 
   
   # SidePanel -------------------------------------------
   # -The Input/Dropdown Menu that Control the Output
@@ -41,7 +42,7 @@ shinyUI(fluidPage(
       selectInput(
         inputId = "dataset", 
         label = labelMandatory("Select Dataset"), 
-        choices = c("",DATASET), 
+        choices = c("",dbListTables(conn)), 
         selected = NULL,
         multiple = FALSE),
       
@@ -68,7 +69,9 @@ shinyUI(fluidPage(
                    label = "Submit",
                    width = '85px'),
       
-      # Displays the Reset button
+      # JS code for Reset Button
+      extendShinyjs(text = jsResetCode),
+      # Displays the Reset Button
       actionButton(inputId = "resetBttn", 
                    label = "Reset",
                    width = '85px'),

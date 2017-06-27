@@ -107,6 +107,11 @@ shinyServer(function(input, output) {
     shinyjs::toggleState(id = "submitBttn", condition = mandatoryFilled)
   })
   
- 
+  # Resets Page
+  observeEvent(
+    input$resetBttn, {
+      js$reset()
+    }
+  )
   
 })

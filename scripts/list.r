@@ -32,4 +32,12 @@ DISTRICT <- c('APS', 'BCPS', 'BPS', 'CSD',
               'OPBD', 'NYC', 'NPS', 'OUSD',
               'PSD', 'SAISD', 'TPS', 'DCPS')
 
-
+# Connects to the server
+conn <- 
+  dbConnect(
+    drv = dbDriver("PostgreSQL"), 
+    dbname = "Education",
+    host = 'education.csj8biafq77k.us-west-2.rds.amazonaws.com',
+    port = '5432',
+    user = "crpe",
+    password = "!crpecrpe1") 

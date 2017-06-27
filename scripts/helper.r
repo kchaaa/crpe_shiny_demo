@@ -14,3 +14,6 @@ labelMandatory <- function(label) {
 }
 # Makes the Asterix Red
 appCSS <- ".mandatory_star { color: red; }"
+
+# Resets the page
+jsResetCode <- "shinyjs.reset = function() {history.go(0)}" 
