@@ -5,7 +5,7 @@
 fieldsMandatory <- c("dataset", "year")
 
 # Names for the Options OF Dropdown Menu: Dataset
-DATASET <- c('mockschools', 'mockcensus', 'mockstates'
+DATASET <- c('mockschools', 'mockcensus', 'mockstates')
 
 # Names for the Options OF Dropdown Menu: State
 STATE <- c('AL', 'AK', 'AZ', 'AR', 'CA', 'CO',
