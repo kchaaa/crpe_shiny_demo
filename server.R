@@ -20,11 +20,8 @@ library(RPostgreSQL) # Need to Read PostgreSQL
 
 ## Backend of the Shiny App --------------------------------------------------------
 shinyServer(function(input, output) {
- 
-  ## MainPanel ---------------------------------------------------------------------
-  # Renders the data table based on the inputs from the side panel
-  output$my_table <- renderDataTable({
-    
+  
+  dataTable <- reactive({
     ## Establish Connection to DB --------------------------------------------------------
     # Connects to the server
     conn <- 
@@ -35,31 +32,30 @@ shinyServer(function(input, output) {
         port = '5432',
         user = "crpe",
         password = "!crpecrpe1") 
-        # Disconnects from the Database Once User Done using App 
-        on.exit(dbDisconnect(conn)) 
-        
-        # Gets the Data
-        dbGetQuery(conn, paste(
-          "SELECT * FROM ", input$dataset, ";", sep = ""))
-        
-      
+    # Disconnects from the Database Once User Done using App 
+    on.exit(dbDisconnect(conn)) 
+    
+    # Gets the Data
+    dbGetQuery(conn, paste(
+      "SELECT * FROM ", input$dataset, ";", sep = ""))
+    
+    
     ## TEST: check if the connection is successful (MAKE SURE TO COMMENT OUT BEFORE RUNNING)
     # Run together with conn from above^
     # dbListTables(conn)
     # RESULT Should Be: "mockschools" "mockcensus", mockstates (or whatever the list of datasets are in the DB)
-    
-    
- 
   })
   
-  # Prepares Data Table to be Downloaded
-  dataTable <- reactive({
-    
+  # Renders the data table based on the inputs from the side panel
+  output$my_table <- renderDataTable({
+    dataTable()
   })
+  
+  
   
   # Download Button
   output$downloadBttn <- downloadHandler(
-    filename = function() { paste0('test', '.csv') },
+    filename = function() { paste(format(Sys.time(), "%b %d %Y"), '-data.csv', sep='') },
     content = function(file) {
       write.csv(dataTable(), file, row.names = FALSE)
     }
