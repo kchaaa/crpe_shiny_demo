@@ -9,9 +9,9 @@
 library(shiny) # Need to Run Shiny App
 library(shinyjs) # Need to Make Fields Mandatory/Optional and Do Other Cool Stuff
 library(DBI) # Need to Query with Database
-library(plyr) # Optional (for now)
-library(dplyr) # Optional (for now)
-library(dbplyr) # Allows you to interact with the database using dplyr instead of SQL (same concept, different terms)
+# library(plyr) # Optional (for now)
+# library(dplyr) # Optional (for now)
+# library(dbplyr) # Allows you to interact with the database using dplyr instead of SQL (same concept, different terms)
 # IF having problems, use devtools::install_github("tidyverse/dbplyr") (make sure to have devtools installed first)
 library(RPostgreSQL) # Need to Read PostgreSQL
 
@@ -43,18 +43,20 @@ shinyServer(function(input, output) {
   # Renders the data table based on the inputs from the side panel
   output$my_table <- renderDataTable({
     
-    
-    # Gets the Data
-    dbGetQuery(conn, paste0(
-      "SELECT * FROM ", input$dataset, ";"))
-    
     # Disconnects from the Database Once User Done using App 
     on.exit(dbDisconnect(conn), add = TRUE)
     
+    
+    # Gets the Data
+    dbGetQuery(conn, paste(
+      "SELECT * FROM ", input$dataset, ";", sep = ""))
+    
+    
+    
   })
   
-  # Prepares Data to be Downloaded
-  datasetInput <- reactive({
+  # Prepares Data Table to be Downloaded
+  dataTable <- reactive({
     
   })
   
@@ -62,7 +64,7 @@ shinyServer(function(input, output) {
   output$downloadBttn <- downloadHandler(
     filename = function() { paste0('test', '.csv') },
     content = function(file) {
-      write.csv(datasetInput(), file, row.names = FALSE)
+      write.csv(dataTable(), file, row.names = FALSE)
     }
   )
   
