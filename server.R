@@ -15,7 +15,8 @@ library(DBI) # Need to Query with Database
 # IF having problems, use devtools::install_github("tidyverse/dbplyr") (make sure to have devtools installed first)
 library(RPostgreSQL) # Need to Read PostgreSQL
 
-
+source('scripts/list.r')
+source('scripts/helper.r')  # For Helpful Functions
 
 
 ## Backend of the Shiny App --------------------------------------------------------
@@ -51,14 +52,27 @@ shinyServer(function(input, output) {
     dataTable()
   })
   
-  
-  
   # Download Button
   output$downloadBttn <- downloadHandler(
-    filename = function() { paste(format(Sys.time(), "%b %d %Y"), '-data.csv', sep='') },
+    filename = function() { paste('data_', getFormattedTime(), '.csv', sep='') },
     content = function(file) {
       write.csv(dataTable(), file, row.names = FALSE)
     }
   )
+  
+  # Mandatory Fields Part
+  observe({
+    # check if all mandatory fields have a value
+    mandatoryFilled <-
+      vapply(fieldsMandatory,
+             function(x) {
+               !is.null(input[[x]]) && input[[x]] != ""
+             },
+             logical(1))
+    mandatoryFilled <- all(mandatoryFilled)
+    
+    # enable/disable the submit button
+    shinyjs::toggleState(id = "submitBttn", condition = mandatoryFilled)
+  })
   
 })
