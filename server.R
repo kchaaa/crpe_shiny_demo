@@ -21,6 +21,38 @@ source('scripts/helper.r')  # For Helpful Functions
 
 ## Backend of the Shiny App --------------------------------------------------------
 shinyServer(function(input, output) {
+  # Dynamic UI
+  output$dynamic <- renderUI ({
+    
+    
+    switch(input$dataset,
+           "mockschools" = 
+             # Pick the District
+             pickerInput(
+               inputId = "district", 
+               label = "Select District", 
+               choices = DISTRICT, options = list(`actions-box` = TRUE), 
+               multiple = TRUE
+             ),
+           
+           "mockcensus" = 
+             # Pick the City
+             pickerInput(
+               inputId = "city", 
+               label = "Select City", 
+               choices = CITY, options = list(`actions-box` = TRUE), 
+               multiple = TRUE
+             ),
+           "mockstates" = 
+             # Pick the State
+             pickerInput(
+               inputId = "state", 
+               label = "Select State", 
+               choices = STATE, options = list(`actions-box` = TRUE), 
+               multiple = TRUE
+             )
+    )
+  })
   
   dataTable <- reactive({
     ## Establish Connection to DB --------------------------------------------------------
@@ -74,5 +106,7 @@ shinyServer(function(input, output) {
     # enable/disable the submit button
     shinyjs::toggleState(id = "submitBttn", condition = mandatoryFilled)
   })
+  
+ 
   
 })

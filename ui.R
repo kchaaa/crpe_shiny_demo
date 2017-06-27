@@ -60,29 +60,8 @@ shinyUI(fluidPage(
         max = '2015'
       ),
       
-      # Pick the State
-      pickerInput(
-        inputId = "state", 
-        label = "Select State", 
-        choices = STATE, options = list(`actions-box` = TRUE), 
-        multiple = TRUE
-      ),
-      
-      # Pick the City
-      pickerInput(
-        inputId = "city", 
-        label = "Select City", 
-        choices = CITY, options = list(`actions-box` = TRUE), 
-        multiple = TRUE
-      ),
-      
-      # Pick the District
-      pickerInput(
-        inputId = "district", 
-        label = "Select District", 
-        choices = DISTRICT, options = list(`actions-box` = TRUE), 
-        multiple = TRUE
-      ),
+      # Dynamic UI
+      uiOutput(outputId = "dynamic"),
       
       # Displays the Submit button
       actionButton(inputId = "submitBttn", 
