@@ -16,43 +16,40 @@ library(DBI) # Need to Query with Database
 library(RPostgreSQL) # Need to Read PostgreSQL
 
 
-## Establish Connection to DB --------------------------------------------------------
-# Connects to the server
-conn <- 
-  dbConnect(
-    drv = dbDriver("PostgreSQL"), 
-    dbname = "Education",
-    host = 'education.csj8biafq77k.us-west-2.rds.amazonaws.com',
-    port = '5432',
-    user = "crpe",
-    password = "!crpecrpe1"
-  )
-## TEST: check if the connection is successful (MAKE SURE TO COMMENT OUT BEFORE RUNNING)
-# Run together with conn from above^
-# dbListTables(conn)
-# RESULT Should Be: "mockschools" "mockcensus", mockstates (or whatever the list of datasets are in the DB)
 
 
 ## Backend of the Shiny App --------------------------------------------------------
 shinyServer(function(input, output) {
-  ## SidePanel ---------------------------------------------------------------------
-  
-  
-  
+ 
   ## MainPanel ---------------------------------------------------------------------
   # Renders the data table based on the inputs from the side panel
   output$my_table <- renderDataTable({
     
-    # Disconnects from the Database Once User Done using App 
-    on.exit(dbDisconnect(conn), add = TRUE)
+    ## Establish Connection to DB --------------------------------------------------------
+    # Connects to the server
+    conn <- 
+      dbConnect(
+        drv = dbDriver("PostgreSQL"), 
+        dbname = "Education",
+        host = 'education.csj8biafq77k.us-west-2.rds.amazonaws.com',
+        port = '5432',
+        user = "crpe",
+        password = "!crpecrpe1") 
+        # Disconnects from the Database Once User Done using App 
+        on.exit(dbDisconnect(conn)) 
+        
+        # Gets the Data
+        dbGetQuery(conn, paste(
+          "SELECT * FROM ", input$dataset, ";", sep = ""))
+        
+      
+    ## TEST: check if the connection is successful (MAKE SURE TO COMMENT OUT BEFORE RUNNING)
+    # Run together with conn from above^
+    # dbListTables(conn)
+    # RESULT Should Be: "mockschools" "mockcensus", mockstates (or whatever the list of datasets are in the DB)
     
     
-    # Gets the Data
-    dbGetQuery(conn, paste(
-      "SELECT * FROM ", input$dataset, ";", sep = ""))
-    
-    
-    
+ 
   })
   
   # Prepares Data Table to be Downloaded
