@@ -3,8 +3,8 @@
 # Date: 6-23-2016
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
-# rm(list=ls())
-# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+rm(list=ls())
+setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 
 # Libraries Needed ----------------------------------------------------------
 library(shiny) # Need to Run Shiny App
@@ -47,18 +47,14 @@ shinyUI(fluidPage(
         multiple = FALSE),
       
       # Displays Dropdown Menu 2: Year 
-      # pickerInput(
-      #   inputId = "year", 
-      #   label = "Select Year(s)", 
-      #   choices = YEARS, options = list(`actions-box` = TRUE), 
-      #   multiple = TRUE
-      # ),
-      numericInput(
-        inputId = 'year',
-        label = labelMandatory('Select Year'),
-        value = '2015',  # Default Starting Value
-        min = '1990',
-        max = '2015'
+      conditionalPanel(
+        condition = 'input.dataset!=null',
+        pickerInput(
+          inputId = "year",
+          label = "Select Year(s)",
+          choices = YEAR, options = list(`actions-box` = TRUE),
+          multiple = TRUE
+        )
       ),
       
       # Dynamic UI
@@ -87,7 +83,7 @@ shinyUI(fluidPage(
       # Displays Data Table
       conditionalPanel(
         condition = "input.submitBttn == 1", # means first click
-        dataTableOutput(outputId = "my_table")
+        dataTableOutput(outputId = "myTable")
         # find out if you can include its own scroller
       ),
       

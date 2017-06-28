@@ -3,8 +3,8 @@
 # Date: 6-23-2016
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
-# rm(list=ls())
-# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+rm(list=ls())
+setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 
 library(shiny) # Need to Run Shiny App
 library(shinyjs) # Need to Make Fields Mandatory/Optional and Do Other Cool Stuff
@@ -14,13 +14,14 @@ library(DBI) # Need to Query with Database
 # library(dbplyr) # Allows you to interact with the database using dplyr instead of SQL (same concept, different terms)
 # IF having problems, use devtools::install_github("tidyverse/dbplyr") (make sure to have devtools installed first)
 library(RPostgreSQL) # Need to Read PostgreSQL
+library(DT) # Need to Download Filtered DataTable Output
 
 source('scripts/list.r')
 source('scripts/helper.r')  # For Helpful Functions
 
 
 ## Backend of the Shiny App --------------------------------------------------------
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   # Dynamic UI
   output$dynamic <- renderUI ({
     switch(input$dataset,
@@ -75,7 +76,6 @@ shinyServer(function(input, output) {
     # Gets the Data
     dbGetQuery(conn, query)
     
-    
     ## TEST: check if the connection is successful (MAKE SURE TO COMMENT OUT BEFORE RUNNING)
     # Run together with conn from above^
     # dbListTables(conn)
@@ -83,7 +83,7 @@ shinyServer(function(input, output) {
   })
   
   # Renders the data table based on the inputs from the side panel
-  output$my_table <- renderDataTable({
+  output$my_table <- Shiny::renderDataTable({
     dataTable()
   })
   
@@ -91,7 +91,7 @@ shinyServer(function(input, output) {
   output$downloadBttn <- downloadHandler(
     filename = function() { paste('data_', getFormattedTime(), '.csv', sep='') },
     content = function(file) {
-      write.csv(dataTable(), file, row.names = FALSE)
+      write.csv(input$myTable_rows_all, file, row.names = FALSE)
     }
   )
   
