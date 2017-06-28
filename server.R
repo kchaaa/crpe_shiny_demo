@@ -3,8 +3,8 @@
 # Date: 6-23-2016
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
-rm(list=ls())
-setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+# rm(list=ls())
+# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 
 library(shiny) # Need to Run Shiny App
 library(shinyjs) # Need to Make Fields Mandatory/Optional and Do Other Cool Stuff
@@ -14,14 +14,14 @@ library(DBI) # Need to Query with Database
 # library(dbplyr) # Allows you to interact with the database using dplyr instead of SQL (same concept, different terms)
 # IF having problems, use devtools::install_github("tidyverse/dbplyr") (make sure to have devtools installed first)
 library(RPostgreSQL) # Need to Read PostgreSQL
-library(DT) # Need to Download Filtered DataTable Output
+# library(DT) # Need to Download Filtered DataTable
 
 source('scripts/list.r')
 source('scripts/helper.r')  # For Helpful Functions
 
 
 ## Backend of the Shiny App --------------------------------------------------------
-shinyServer(function(input, output, session) {
+shinyServer(function(input, output) {
   # Dynamic UI
   output$dynamic <- renderUI ({
     switch(input$dataset,
@@ -50,7 +50,7 @@ shinyServer(function(input, output, session) {
                choices = STATE, options = list(`actions-box` = TRUE), 
                multiple = TRUE
              )
-          )
+    )
   })
   
   dataTable <- reactive({
@@ -69,12 +69,13 @@ shinyServer(function(input, output, session) {
     
     # SQL Query
     query <- paste(
-              "SELECT * FROM ",
-                input$dataset,
-              ";", sep = "")
+      "SELECT * FROM ",
+      input$dataset,
+      ";", sep = "")
     
     # Gets the Data
     dbGetQuery(conn, query)
+    
     
     ## TEST: check if the connection is successful (MAKE SURE TO COMMENT OUT BEFORE RUNNING)
     # Run together with conn from above^
@@ -83,7 +84,7 @@ shinyServer(function(input, output, session) {
   })
   
   # Renders the data table based on the inputs from the side panel
-  output$my_table <- Shiny::renderDataTable({
+  output$my_table <- renderDataTable({
     dataTable()
   })
   
@@ -91,7 +92,7 @@ shinyServer(function(input, output, session) {
   output$downloadBttn <- downloadHandler(
     filename = function() { paste('data_', getFormattedTime(), '.csv', sep='') },
     content = function(file) {
-      write.csv(input$myTable_rows_all, file, row.names = FALSE)
+      write.csv(dataTable(), file, row.names = FALSE)
     }
   )
   
