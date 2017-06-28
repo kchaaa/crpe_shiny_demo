@@ -3,8 +3,8 @@
 # Date: 6-23-2016
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
-rm(list=ls())
-setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+# rm(list=ls())
+# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 
 # Libraries Needed ----------------------------------------------------------
 library(shiny) # Need to Run Shiny App
@@ -86,7 +86,7 @@ shinyUI(fluidPage(
     mainPanel(
       # Displays Data Table
       conditionalPanel(
-        condition = "input.submitBttn == 1",
+        condition = "input.submitBttn == 1", # means first click
         dataTableOutput(outputId = "my_table")
         # find out if you can include its own scroller
       ),

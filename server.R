@@ -23,8 +23,6 @@ source('scripts/helper.r')  # For Helpful Functions
 shinyServer(function(input, output) {
   # Dynamic UI
   output$dynamic <- renderUI ({
-    
-    
     switch(input$dataset,
            "mockschools" = 
              # Pick the District
@@ -51,7 +49,7 @@ shinyServer(function(input, output) {
                choices = STATE, options = list(`actions-box` = TRUE), 
                multiple = TRUE
              )
-    )
+          )
   })
   
   dataTable <- reactive({
@@ -68,9 +66,14 @@ shinyServer(function(input, output) {
     # Disconnects from the Database Once User Done using App 
     on.exit(dbDisconnect(conn)) 
     
+    # SQL Query
+    query <- paste(
+              "SELECT * FROM ",
+                input$dataset,
+              ";", sep = "")
+    
     # Gets the Data
-    dbGetQuery(conn, paste(
-      "SELECT * FROM ", input$dataset, ";", sep = ""))
+    dbGetQuery(conn, query)
     
     
     ## TEST: check if the connection is successful (MAKE SURE TO COMMENT OUT BEFORE RUNNING)
