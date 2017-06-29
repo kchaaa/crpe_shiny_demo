@@ -1,0 +1,10 @@
+name: crpe_data
+title: CRPE Data
+account: crpedata
+server: shinyapps.io
+appId: 193277
+bundleId: 886977
+url: https://crpedata.shinyapps.io/crpe_data/
+when: 1498760867.36326
+asMultiple: FALSE
+asStatic: FALSE

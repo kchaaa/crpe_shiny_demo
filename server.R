@@ -5,6 +5,7 @@
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
 # rm(list=ls())
 # setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+# setwd("C:/Users/phato_000/Documents/CRPE/Shiny/crpe_shiny_demo") # PC
 
 library(shiny) # Need to Run Shiny App
 library(shinyjs) # Need to Make Fields Mandatory/Optional and Do Other Cool Stuff
@@ -14,7 +15,10 @@ library(DBI) # Need to Query with Database
 # library(dbplyr) # Allows you to interact with the database using dplyr instead of SQL (same concept, different terms)
 # IF having problems, use devtools::install_github("tidyverse/dbplyr") (make sure to have devtools installed first)
 library(RPostgreSQL) # Need to Read PostgreSQL
-# library(DT) # Need to Download Filtered DataTable
+library(RMySQL)
+library(DT) # Need to Download Filtered DataTable
+library(stringr)
+
 
 source('scripts/list.r')
 source('scripts/helper.r')  # For Helpful Functions
@@ -22,36 +26,6 @@ source('scripts/helper.r')  # For Helpful Functions
 
 ## Backend of the Shiny App --------------------------------------------------------
 shinyServer(function(input, output) {
-  # Dynamic UI
-  output$dynamic <- renderUI ({
-    switch(input$dataset,
-           "mockschools" = 
-             # Pick the District
-             pickerInput(
-               inputId = "district", 
-               label = "Select District", 
-               choices = DISTRICT, options = list(`actions-box` = TRUE), 
-               multiple = TRUE
-             ),
-           
-           "mockcensus" = 
-             # Pick the City
-             pickerInput(
-               inputId = "city", 
-               label = "Select City", 
-               choices = CITY, options = list(`actions-box` = TRUE), 
-               multiple = TRUE
-             ),
-           "mockstates" = 
-             # Pick the State
-             pickerInput(
-               inputId = "state", 
-               label = "Select State", 
-               choices = STATE, options = list(`actions-box` = TRUE), 
-               multiple = TRUE
-             )
-    )
-  })
   
   dataTable <- reactive({
     ## Establish Connection to DB --------------------------------------------------------
@@ -64,14 +38,58 @@ shinyServer(function(input, output) {
         port = '5432',
         user = "crpe",
         password = "!crpecrpe1") 
+    
     # Disconnects from the Database Once User Done using App 
     on.exit(dbDisconnect(conn)) 
-    
+    WORKING_INPUT <- c()
+    SELECTED_DATASET <- input$dataset
+    CONDITION_EXISTS <- function() {
+      
+      D <- Switch (SELECTED_DATASET) {
+        Case(SELECTED_DATASET = 'edfacts'):
+          Return('edfacts.DISTRICT ')
+        Case(SELECTED_DATASET = 'ocr) :
+          Return( 'ocr.ENROLLMENT  ')
+        Case(SELECTED_DATASET = 'ccd) :
+          Return('ccd.DEMOGRAPHIC  ')          
+        Case(SELECTED_DATASET = 'state) :
+          Return( 'state.STATENAM ')
+        Case(SELECTED_DATASET = 'census):
+          Return( 'census.TRACT ')
+        Case(SELECTED_DATASET = 'local):
+          Return( 'local.LOCAL_INFO  ')
+        Default:
+          Throw(ERROR);
+      }
+      
+      str <- D
+      
+      for (i in WORKING_INPUT) {
+        #simon owns this
+        #lol
+        #this code does some things, and then it stops
+        #cool
+        #good job boy-o
+        paste(str, ' OR ', D, ' = ', i, sep ='')  
+      }  
+      str <- str_split?str_spl
+      return(substr(str, 4, stop))
+      
+    } 
     # SQL Query
     query <- paste(
       "SELECT * FROM ",
-      input$dataset,
-      ";", sep = "")
+      SELECTED_DATASET,
+      " WHERE ",
+      paste(SELECTED_DATASET, '.YEAR', sep = ""),
+      "=",
+      input$year,
+      "AND (",
+      CONDITION_EXISTS,
+      ");",
+      sep = "")
+    
+    
     
     # Gets the Data
     dbGetQuery(conn, query)
@@ -84,7 +102,7 @@ shinyServer(function(input, output) {
   })
   
   # Renders the data table based on the inputs from the side panel
-  output$my_table <- renderDataTable({
+  output$myTable <- renderDataTable({
     dataTable()
   })
   

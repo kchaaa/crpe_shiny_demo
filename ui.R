@@ -2,9 +2,10 @@
 # Owner: Kevin 
 # Date: 6-23-2016
 
-#### COMMENT THESE OUT BEFORE PUBLISHING ()
-rm(list=ls())
-setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+# #### COMMENT THESE OUT BEFORE PUBLISHING ()
+# rm(list=ls())
+# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+# setwd("C:/Users/phato_000/Documents/CRPE/Shiny/crpe_shiny_demo") # PC
 
 # Libraries Needed ----------------------------------------------------------
 library(shiny) # Need to Run Shiny App
@@ -57,8 +58,37 @@ shinyUI(fluidPage(
         )
       ),
       
-      # Dynamic UI
-      uiOutput(outputId = "dynamic"),
+      # Pick the District
+      conditionalPanel(
+        condition = "input.dataset.includes(mockschools)",
+        pickerInput(
+          inputId = "district", 
+          label = "Select District", 
+          choices = DISTRICT, options = list(`actions-box` = TRUE), 
+          multiple = TRUE
+        )
+      ),
+      
+      # Pick the City
+      conditionalPanel(
+        condition = "input.dataset == mockcensus",
+        pickerInput(
+          inputId = "city", 
+          label = "Select City", 
+          choices = CITY, options = list(`actions-box` = TRUE), 
+          multiple = TRUE
+        )
+      ),
+      # Pick the State
+      conditionalPanel(
+        condition = "input.dataset == mockstates",
+        pickerInput(
+          inputId = "state", 
+          label = "Select State", 
+          choices = STATE, options = list(`actions-box` = TRUE), 
+          multiple = TRUE
+        )
+      ),
       
       # Displays the Submit button
       actionButton(inputId = "submitBttn", 

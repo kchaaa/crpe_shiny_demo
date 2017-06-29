@@ -1,5 +1,8 @@
 # List of functions we could use
 
+library(shinyjs)
+library(V8)
+
 # Gets a Formmated String of Timestamp
 getFormattedTime <- function() {
   format(Sys.time(), "%Y%m%d")

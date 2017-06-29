@@ -1,11 +1,14 @@
 # Manually Written Lists for The Dropdown Menus
 
+library(DBI)
+library(RPostgreSQL)
+
+
 ## Lists ------------------------------------------------------------------
 # Define which fields are mandatory
 fieldsMandatory <- "dataset"
 
 # Names for the Options OF Dropdown Menu: Dataset
-DATASET <- c('mockschools', 'mockcensus', 'mockstates')
 
 # Names for the Options OF Dropdown Menu: State
 STATE <- c('AL', 'AK', 'AZ', 'AR', 'CA', 'CO',
