@@ -2,10 +2,9 @@
 # Owner: Kevin 
 # Date: 6-23-2016
 
-# #### COMMENT THESE OUT BEFORE PUBLISHING ()
-# rm(list=ls())
-# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
-# setwd("C:/Users/phato_000/Documents/CRPE/Shiny/crpe_shiny_demo") # PC
+#### COMMENT THESE OUT BEFORE PUBLISHING ()
+rm(list=ls())
+setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 
 # Libraries Needed ----------------------------------------------------------
 library(shiny) # Need to Run Shiny App
@@ -26,6 +25,10 @@ shinyUI(fluidPage(
       height = '100px', width = '250px', style = "margin-top: 10px"),
   # Application title
   titlePanel("and the Beanstalk"), 
+  
+  tabPanel(
+    
+  )
   
   # SidePanel -------------------------------------------
   # -The Input/Dropdown Menu that Control the Output
@@ -79,6 +82,7 @@ shinyUI(fluidPage(
           multiple = TRUE
         )
       ),
+      
       # Pick the State
       conditionalPanel(
         condition = "input.dataset == mockstates",

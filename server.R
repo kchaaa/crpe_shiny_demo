@@ -3,8 +3,8 @@
 # Date: 6-23-2016
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
-# rm(list=ls())
-# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+rm(list=ls())
+setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 # setwd("C:/Users/phato_000/Documents/CRPE/Shiny/crpe_shiny_demo") # PC
 
 library(shiny) # Need to Run Shiny App
@@ -13,19 +13,48 @@ library(DBI) # Need to Query with Database
 # library(plyr) # Optional (for now)
 # library(dplyr) # Optional (for now)
 # library(dbplyr) # Allows you to interact with the database using dplyr instead of SQL (same concept, different terms)
-# IF having problems, use devtools::install_github("tidyverse/dbplyr") (make sure to have devtools installed first)
 library(RPostgreSQL) # Need to Read PostgreSQL
-library(RMySQL)
 library(DT) # Need to Download Filtered DataTable
-library(stringr)
+library(R.oo)
 
 
 source('scripts/list.r')
 source('scripts/helper.r')  # For Helpful Functions
 
 
+
 ## Backend of the Shiny App --------------------------------------------------------
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
+  
+  
+  # # Query Stuff ------------------------------------------------------------
+  # WORKING_INPUT <- c()
+  # ERROR <- "Not Found"
+  # CONDITION_EXISTS <- function() {
+  # 
+  #   # if statement that depends on the values selected
+  #   D <- switch(SELECTED_DATASET,
+  #               'edfacts' = return('edfacts.DISTRICT '),
+  #               'ocr' = return('ocr.ENROLLMENT'),
+  #               'ccd' = return('ccd.DEMOGRAPHIC'),
+  #               'state' = return('state.STATENAM'),
+  #               'census' = return('census.TRACT'),
+  #               'local' = return('local.LOCAL_INFO'),
+  #               throw(ERROR)
+  #   )
+  # 
+  #   str <- D
+  # 
+  #   for (i in WORKING_INPUT) {
+  #     #simon owns this
+  #     #lol
+  #     #this code does some things, and then it stops
+  #     #cool
+  #     #good job boy-o
+  #     paste(str, ' OR ', D, ' = ', i, sep ='')
+  #   }
+  #   return(substr(str, 4, stop))
+  # }
   
   dataTable <- reactive({
     ## Establish Connection to DB --------------------------------------------------------
@@ -41,52 +70,18 @@ shinyServer(function(input, output) {
     
     # Disconnects from the Database Once User Done using App 
     on.exit(dbDisconnect(conn)) 
-    WORKING_INPUT <- c()
-    SELECTED_DATASET <- input$dataset
-    CONDITION_EXISTS <- function() {
-      
-      D <- Switch (SELECTED_DATASET) {
-        Case(SELECTED_DATASET = 'edfacts'):
-          Return('edfacts.DISTRICT ')
-        Case(SELECTED_DATASET = 'ocr) :
-          Return( 'ocr.ENROLLMENT  ')
-        Case(SELECTED_DATASET = 'ccd) :
-          Return('ccd.DEMOGRAPHIC  ')          
-        Case(SELECTED_DATASET = 'state) :
-          Return( 'state.STATENAM ')
-        Case(SELECTED_DATASET = 'census):
-          Return( 'census.TRACT ')
-        Case(SELECTED_DATASET = 'local):
-          Return( 'local.LOCAL_INFO  ')
-        Default:
-          Throw(ERROR);
-      }
-      
-      str <- D
-      
-      for (i in WORKING_INPUT) {
-        #simon owns this
-        #lol
-        #this code does some things, and then it stops
-        #cool
-        #good job boy-o
-        paste(str, ' OR ', D, ' = ', i, sep ='')  
-      }  
-      str <- str_split?str_spl
-      return(substr(str, 4, stop))
-      
-    } 
+    
     # SQL Query
     query <- paste(
       "SELECT * FROM ",
-      SELECTED_DATASET,
+      input$dataset,
       " WHERE ",
-      paste(SELECTED_DATASET, '.YEAR', sep = ""),
+      paste(input$dataset, '.YEAR', sep = ""),
       "=",
       input$year,
-      "AND (",
-      CONDITION_EXISTS,
-      ");",
+      # "AND (",
+      # CONDITION_EXISTS,
+      ";",
       sep = "")
     
     
@@ -135,5 +130,10 @@ shinyServer(function(input, output) {
       js$reset()
     }
   )
+  
+  # Shows Year After Selecting Dataset
+  observeEvent(input$dataset,{
+    shinyjs::show("year")
+  })
   
 })
