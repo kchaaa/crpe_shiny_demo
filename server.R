@@ -3,8 +3,8 @@
 # Date: 6-23-2016
 
 #### COMMENT THESE OUT BEFORE PUBLISHING ()
-rm(list=ls())
-setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
+# rm(list=ls())
+# setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
 # setwd("C:/Users/phato_000/Documents/CRPE/Shiny/crpe_shiny_demo") # PC
 
 library(shiny) # Need to Run Shiny App
@@ -73,12 +73,12 @@ shinyServer(function(input, output, session) {
     
     # SQL Query
     query <- paste(
-      "SELECT * FROM ",
-      input$dataset,
-      " WHERE ",
-      paste(input$dataset, '.YEAR', sep = ""),
-      "=",
-      input$year,
+      "SELECT * FROM Schools",
+      # input$dataset,
+      # " WHERE ",
+      # paste(input$dataset, '.YEAR', sep = ""),
+      # "=",
+      # input$year,
       # "AND (",
       # CONDITION_EXISTS,
       ";",
@@ -101,11 +101,35 @@ shinyServer(function(input, output, session) {
     dataTable()
   })
   
+  # Sets Up 'Filtered' DataTable to Download
+  processedFilteredData <- reactive({
+    inputFilter <- input$filtered_table
+    # This code assumes that there is an entry for every
+    # cell in the table (see note above about replacing
+    # NA values with the empty string).
+    col_names <- names(dataTable())
+    n_cols <- length(col_names)
+    n_row <- length(inputFilter)/n_cols
+    matrix <- matrix(inputFilter, ncol = n_cols, byrow = TRUE)
+    df <- data.frame(matrix)
+    names(df) <- col_names
+    return(df)
+  })
+  
+  # Appends the datatable to include new info every time you press submit button
+  # observeEvent(input$submitBttn,{
+  #   #Append the row in the dataframe
+  #   dataTable <- rbind(dataTable,Results()) 
+  #   #Display the output in the table
+  #   output$myTable <- renderTable(dataTable)
+  # })
+  # 
+  
   # Download Button
   output$downloadBttn <- downloadHandler(
     filename = function() { paste('data_', getFormattedTime(), '.csv', sep='') },
     content = function(file) {
-      write.csv(dataTable(), file, row.names = FALSE)
+      write.csv(processedFilteredData(), file, row.names = FALSE)
     }
   )
   
