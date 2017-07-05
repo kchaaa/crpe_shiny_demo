@@ -5,7 +5,7 @@
 # #### COMMENT THESE OUT BEFORE PUBLISHING ()
 # rm(list=ls())
 # # setwd("/Users/crpe/Documents/crpe_shiny_demo") # MAC
-# setwd("C:/Users/phato_000/Documents/CRPE/Shiny/crpe_shiny_demo") # PC
+setwd("C:/Users/phato_000/Documents/CRPE/Shiny/crpe_shiny_demo") # PC
 
 # Libraries Needed ----------------------------------------------------------
 library(shiny) # Need to Run Shiny App
@@ -17,14 +17,18 @@ source('scripts/list.r') # For Manual Side
 source('scripts/helper.r') # For Helpful Functions
 
 ## Frontend of the Shiny App-----------------------------------------------
-shinyUI(navbarPage("Database",
+shinyUI(navbarPage("Database", # Title Shown on the Browser Tab
+    
+    # Makes Pag e Look Prettier
+    theme = "bootstrap.css",
+    
     # Main Tool of the App ------------------------------------------------
     tabPanel("Tool",
        fluidPage(
          # Need to Run These for 'Mandatory Fields' Aspect
          shinyjs::useShinyjs(),
          shinyjs::inlineCSS(appCSS),
-         # CRPE Logo
+         # CRPE Logo  
          img(src = "crpe.png", 
              height = '100px', width = '250px', style = "margin-top: 10px"),
          # Application title
@@ -106,9 +110,24 @@ shinyUI(navbarPage("Database",
                           width = '85px'),
              
              # Blank Space
-             hr()
+             hr(),
              
+             sidebarPanel(
+               checkboxGroupInput(
+                 inputId = "colChosen",
+                 label = "Choose Which Columns To Select",
+                 choices = LETTERS,
+                 inline = TRUE,
+                 width = 225
+               )
+             ),
+             
+             # Blank Space
+             hr()
+
            ),
+           
+             
            
            ### MainPanel
            # -The Output/Table Displayed Based on Input
